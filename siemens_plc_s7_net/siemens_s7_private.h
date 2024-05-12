@@ -86,7 +86,7 @@ int g_pdu_length = 0;
 
 s7_error_code_e s7_read_response(int fd, byte_array_info* response, int* read_count);
 
-void s7_initialization(siemens_plc_types_e plc, char* ip);
+
 
 //////////////////////////////////////////////////////////////////////////
 s7_error_code_e read_bit_value(int fd, const char* address, int length, byte_array_info* out_bytes);
@@ -98,6 +98,6 @@ s7_error_code_e write_byte_value(int fd, const char* address, int length, byte_a
 s7_error_code_e write_address_data(int fd, siemens_s7_address_data address_data, byte_array_info in_bytes);
 
 //////////////////////////////////////////////////////////////////////////
-bool initialization_on_connect(int fd);
+
 
 #endif//__H_SIEMENS_S7_PRIVATE_H__

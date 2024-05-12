@@ -24,6 +24,7 @@ struct neu_plugin {
 
     siemens_plc_types_e plc_type;
     bool connected;
+    uint8_t keep_alive_connection_count;
 };
 
 #endif // S7_COMMUNICATION_PLUGIN_H

@@ -102,8 +102,9 @@ static int driver_init(neu_plugin_t *plugin, bool load)
                "===========================\n");
     (void) load;
     plugin->events = neu_event_new();
-
+    plugin->keep_alive_connection_count=0;
     add_connection_status_checker(plugin);
+
 
     plugin->fd     = -1;
     plugin->connected = false;
@@ -119,10 +120,9 @@ static int driver_uninit(neu_plugin_t *plugin)
                "===========================\n");
     plog_notice(plugin, "%s uninit start", plugin->common.name);
 
-
-    neu_event_close(plugin->events);
     s7_plugin_disconnect(plugin);
     plugin->fd = -1;
+    neu_event_close(plugin->events);
     plog_notice(plugin, "%s uninit success", plugin->common.name);
     return 0;
 }
@@ -140,7 +140,7 @@ static int driver_stop(neu_plugin_t *plugin)
     plog_debug(plugin,
                "\n==============================driver_stop"
                "===========================\n");
-    s7_plugin_disconnect(plugin);
+
     plog_notice(plugin, "%s stop success", plugin->common.name);
     return 0;
 }
@@ -182,7 +182,7 @@ static int driver_config(neu_plugin_t *plugin, const char *config)
         return -1;
     }
 
-    plog_notice(plugin, "config: host: %s, port: %" PRId64, host.v.val_str, port.v.val_int);
+    plog_notice(plugin, "config: host: %s, port: %ld, timeout: %ld, plc_type: %ld" PRId64, host.v.val_str, port.v.val_int,timeout.v.val_int,plc_type.v.val_int);
 
     plugin->plc_type = plc_type.v.val_int;
     plugin->port = port.v.val_int;
@@ -232,10 +232,8 @@ static int driver_group_timer(neu_plugin_t *plugin, neu_plugin_group_t *group)
                "\n\n==============================driver_group_timer"
                "===========================\n");
     if(plugin->connected == false){
-        if(s7_plugin_connect(plugin)!=0){
-            plog_error(plugin, "driver_group_timer:Connect failed");
-            return 0;
-        }
+        plog_error(plugin,"PLC 设备未连接, 无法读取数据");
+        return 0;
     }
     utarray_foreach(group->tags, neu_datatag_t *, tag)
     {

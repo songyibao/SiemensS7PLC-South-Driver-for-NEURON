@@ -102,7 +102,6 @@ int socket_open_tcp_client_socket(char* destIp, short destPort) {
 	int                ret;
 
 	sockFd = (int)socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-
 	if (sockFd < 0) {
 		return -1;
 #pragma warning(disable:4996)
@@ -120,15 +119,16 @@ int socket_open_tcp_client_socket(char* destIp, short destPort) {
 		sockFd = -1;
 	}
 
-#ifdef _WIN32
-	int timeout = 5000; //5s
-	ret = setsockopt(sockFd, SOL_SOCKET, SO_SNDTIMEO, (const char*)&timeout, sizeof(timeout));
-	ret = setsockopt(sockFd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(timeout));
-#else
-	struct timeval timeout = { 5,0 };//3s
-	ret = setsockopt(sockFd, SOL_SOCKET, SO_SNDTIMEO, (const char*)&timeout, sizeof(timeout));
-	ret = setsockopt(sockFd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(timeout));
-#endif
+    // 超时时间放在外层设置
+//#ifdef _WIN32
+//	int timeout = 5000; //5s
+//	ret = setsockopt(sockFd, SOL_SOCKET, SO_SNDTIMEO, (const char*)&timeout, sizeof(timeout));
+//	ret = setsockopt(sockFd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(timeout));
+//#else
+//	struct timeval timeout = { 5,0 };//3s
+//	ret = setsockopt(sockFd, SOL_SOCKET, SO_SNDTIMEO, (const char*)&timeout, sizeof(timeout));
+//	ret = setsockopt(sockFd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&timeout, sizeof(timeout));
+//#endif
 
 	return sockFd;
 }

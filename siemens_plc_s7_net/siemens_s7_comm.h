@@ -15,4 +15,7 @@ typedef struct _tag_siemens_s7_address_data {
 
 bool s7_analysis_address(const char* address, int length, siemens_s7_address_data* address_data);
 
+// siemens_s7_private.h -> siemens_s7_common.h
+void s7_initialization(siemens_plc_types_e plc, char* ip);
+bool initialization_on_connect(int fd);
 #endif//__H_SIEMENS_S7_COMM_H__
