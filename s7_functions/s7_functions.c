@@ -70,27 +70,28 @@ int s7_plugin_connect(neu_plugin_t *plugin) {
     if (plugin->connected == true) {
         return -1;
     }
+//    bool ret = false;
+//    plugin->fd = socket_open_tcp_client_socket(plugin->host, plugin->port);
+//    if (plugin->fd < 0) {
+//        plog_debug(plugin, "Failed to open socket:plugin->fd:%d",plugin->fd);
+//        return -1;
+//    }
+//    s7_initialization(plugin->plc_type, plugin->host);
+//    // index 0 表示秒数, index 1 表示微妙数
+//    struct timeval timeout = {0, plugin->timeout};
+//    ret = setsockopt(plugin->fd, SOL_SOCKET, SO_SNDTIMEO, (const char *) &timeout, sizeof(timeout));
+//    if (ret != 0) {
+//        plog_error(plugin, "Setsockopt false");
+//        return -1;
+//    }
+//    ret = setsockopt(plugin->fd, SOL_SOCKET, SO_RCVTIMEO, (const char *) &timeout, sizeof(timeout));
+//    if (ret != 0) {
+//        plog_error(plugin, "Setsockopt false");
+//        return -1;
+//    }
+//    ret = initialization_on_connect(plugin->fd);
     bool ret = false;
-    plugin->fd = socket_open_tcp_client_socket(plugin->host, plugin->port);
-    if (plugin->fd < 0) {
-        plog_debug(plugin, "Failed to open socket");
-        return -1;
-    }
-    s7_initialization(plugin->plc_type, plugin->host);
-    // index 0 表示秒数, index 1 表示微妙数
-    struct timeval timeout = {0, plugin->timeout};
-    ret = setsockopt(plugin->fd, SOL_SOCKET, SO_SNDTIMEO, (const char *) &timeout, sizeof(timeout));
-    if (ret != 0) {
-        plog_error(plugin, "Setsockopt false");
-        return -1;
-    }
-    ret = setsockopt(plugin->fd, SOL_SOCKET, SO_RCVTIMEO, (const char *) &timeout, sizeof(timeout));
-    if (ret != 0) {
-        plog_error(plugin, "Setsockopt false");
-        return -1;
-    }
-    ret = initialization_on_connect(plugin->fd);
-
+    ret = s7_connect(plugin->host,plugin->port,plugin->plc_type,&plugin->fd);
     if (ret == true) {
         plugin->connected = true;
         plugin->common.link_state = NEU_NODE_LINK_STATE_CONNECTED;
